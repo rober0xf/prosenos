@@ -1,9 +1,23 @@
 [project]
 name = "prosenos"
 version = "0.1.0"
-description = "Add your description here"
+description = "Sports match tracking API"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.136.3",
+    "sqlalchemy>=2.0",
+]
+
+[project.scripts]
+prosenos = "app.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
+
+[tool.uv.workspace]
+members = [
+    "microservices/futbol_scraper",
 ]
