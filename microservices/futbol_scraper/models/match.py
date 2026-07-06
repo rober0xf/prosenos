@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 
 
 @dataclass
@@ -14,5 +13,16 @@ class Match:
     away_score: int | None
 
     status: str
-    kickoff: datetime | None
     minute: int | None
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "league": self.league,
+            "home_team": self.home_team,
+            "away_team": self.away_team,
+            "home_score": self.home_score,
+            "away_score": self.away_score,
+            "status": self.status,
+            "minute": self.minute,
+        }

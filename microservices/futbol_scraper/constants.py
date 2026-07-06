@@ -1,5 +1,6 @@
 LEAGUES = {
     "Mundial",
+    "Primera C Metropolitana",
 }
 
 COMPETITIONS = {

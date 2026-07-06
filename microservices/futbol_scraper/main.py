@@ -1,13 +1,28 @@
-from clients.futbol import get_today_matches, get_yesterday_matches
+from datetime import datetime
 
-# today
-today_matches = get_today_matches()
+from clients.futbol import get_matches_by_date
+from fastapi import FastAPI, HTTPException, status
 
-# yesterday
-yesterday_matches = get_yesterday_matches()
+app = FastAPI(title="futbol microservice")
 
-matches = today_matches + yesterday_matches
 
-print(f"matches: {len(matches)}")
-for match in matches:
-    print(match)
+@app.get("/matches/{day:path}")
+def get_matches(day: str):
+    day = day.replace("/", "-").replace(".", "-")
+
+    try:
+        match_date = datetime.strptime(day, "%d-%m-%Y").date()  # noqa: DTZ007
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Use date format: DD-MM-YYYY (e.g. 06-07-2026 or 06/07/2026)",
+        ) from None
+
+    matches = get_matches_by_date(match_date)
+    return [match.to_dict() for match in matches]
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)

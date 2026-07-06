@@ -17,7 +17,6 @@ def map_match(game, league_name):
         home_score=home_score,
         away_score=away_score,
         status=game["status"]["name"],
-        kickoff=game.get("start_time"),
         minute=None,
     )
 
