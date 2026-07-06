@@ -27,9 +27,7 @@ class StatsService:
             return FootballStats.model_validate(stats)
         return NBAStats.model_validate(stats)
 
-    def create_stats(
-        self, team_id: int, data: FootballStatsCreate | NBAStatsCreate
-    ) -> FootballStats | NBAStats:
+    def create_stats(self, team_id: int, data: FootballStatsCreate | NBAStatsCreate) -> FootballStats | NBAStats:
         team = self.db.get(TeamModel, team_id)
         if not team:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")

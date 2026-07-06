@@ -1,7 +1,9 @@
-from fastapi import HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import text
 
 from app.infrastructure.api.routes.deps import DBSession
+
+router = APIRouter(prefix="/api/health", tags=["health"])
 
 
 def health_check(db: DBSession):
@@ -14,3 +16,8 @@ def health_check(db: DBSession):
         ) from e
 
     return {"status": "healthy"}
+
+
+@router.get("/")
+def health():
+    return health_check

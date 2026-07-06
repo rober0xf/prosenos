@@ -369,15 +369,19 @@ version = "0.1.0"
 source = { virtual = "microservices/futbol_scraper" }
 dependencies = [
     { name = "curl-cffi" },
+    { name = "fastapi" },
     { name = "python-dotenv" },
     { name = "requests" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "curl-cffi", specifier = ">=0.15.0" },
+    { name = "fastapi", specifier = ">=0.115.0" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "requests", specifier = ">=2.33.0" },
+    { name = "uvicorn", specifier = ">=0.34.0" },
 ]
 
 [[package]]
@@ -630,6 +634,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "sqlalchemy" },
 ]
 
@@ -641,6 +646,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.3" },
+    { name = "httpx", specifier = ">=0.28.0" },
     { name = "sqlalchemy", specifier = ">=2.0" },
 ]
 
