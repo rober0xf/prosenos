@@ -1,5 +1,5 @@
-from constants import LEAGUES
-from models.match import Match
+from futbol_scraper.constants import LEAGUES
+from futbol_scraper.models.match import Match
 
 
 def map_match(game, league_name):
@@ -29,7 +29,7 @@ def map_matches(data):
         return matches
 
     for league in data["leagues"]:
-        league_name = league["name"]
+        league_name = league["url_name"]
 
         if league_name not in LEAGUES:
             continue

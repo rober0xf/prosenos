@@ -1,11 +1,12 @@
 LEAGUES = {
+    # ligas
     "Mundial",
-    "Primera C Metropolitana",
-}
-
-COMPETITIONS = {
-    "champions": 7,
-    "europa_league": 679,
-    "libertadores": 384,
-    "sudamericada": 480,
+    "brasileirao-serie-a",
+    "liga-profesional-reserva",
+    # copas
+    "champions",
+    "libertadores",
+    "europa_league",
+    "conmebol-sudamericana",
+    "super-cup",
 }

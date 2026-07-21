@@ -4,9 +4,9 @@ from datetime import date
 from typing import TYPE_CHECKING
 
 from fastapi import HTTPException, status
-from helpers import check_if_finished, map_match_to_game
 
 from app.domain.schemas.game import Game
+from app.infrastructure.services.helpers import check_if_finished, map_match_to_game
 
 if TYPE_CHECKING:
     from app.domain.models.game import GameModel
