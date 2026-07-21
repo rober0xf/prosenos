@@ -1,9 +1,16 @@
 from datetime import datetime
 
-from clients.futbol import get_matches_by_date
 from fastapi import FastAPI, HTTPException, status
 
+from futbol_scraper.clients.futbol import get_matches_by_date, get_today_matches
+
 app = FastAPI(title="futbol microservice")
+
+
+@app.get("/matches/today")
+def today_matches():
+    matches = get_today_matches()
+    return [match.to_dict() for match in matches]
 
 
 @app.get("/matches/{day:path}")
