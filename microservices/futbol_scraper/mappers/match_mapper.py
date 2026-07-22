@@ -1,13 +1,23 @@
-from futbol_scraper.constants import LEAGUES
-from futbol_scraper.models.match import Match
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+from constants import LEAGUES
+from models.match import Match
+
+MATCH_TIMEZONE = ZoneInfo("UTC")
 
 
-def map_match(game, league_name):
+def map_match(game: dict, league_name: str):
     home_team, away_team = game["teams"]
+    league_name = league_name.replace("-", " ").title()
     scores = game.get("scores")
 
     home_score = int(scores[0]) if scores else None
     away_score = int(scores[1]) if scores else None
+
+    game_time = game.get("game_time") or -1
+    start_time_str = game.get("start_time")
+    kickoff_dt = datetime.strptime(start_time_str, "%d-%m-%Y %H:%M").replace(tzinfo=MATCH_TIMEZONE) if start_time_str else None
 
     return Match(
         id=game["id"],
@@ -17,7 +27,8 @@ def map_match(game, league_name):
         home_score=home_score,
         away_score=away_score,
         status=game["status"]["name"],
-        minute=None,
+        minute=game_time,
+        kickoff=kickoff_dt,
     )
 
 

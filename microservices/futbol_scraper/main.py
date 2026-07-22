@@ -2,7 +2,7 @@ from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, status
 
-from futbol_scraper.clients.futbol import get_matches_by_date, get_today_matches
+from clients.futbol import get_matches_by_date, get_today_matches
 
 app = FastAPI(title="futbol microservice")
 
@@ -27,9 +27,3 @@ def get_matches(day: str):
 
     matches = get_matches_by_date(match_date)
     return [match.to_dict() for match in matches]
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
