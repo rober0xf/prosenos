@@ -4,7 +4,7 @@ from datetime import UTC, date, datetime, timedelta
 from curl_cffi import requests as cffi_requests
 from dotenv import load_dotenv
 
-from futbol_scraper.mappers.match_mapper import map_matches
+from mappers.match_mapper import map_matches
 
 load_dotenv()
 

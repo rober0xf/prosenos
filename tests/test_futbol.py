@@ -1,4 +1,6 @@
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
+
+import pytest
 
 
 class TestFutbolRoutes:
@@ -63,3 +65,38 @@ class TestFutbolRoutes:
         response = client.get("/api/v1/matches/11-07-2024")
         assert response.status_code == 503
         assert response.json()["detail"] == "Scraper service is unavailable"
+
+
+class TestConnectionManager:
+    @pytest.mark.anyio
+    async def test_broadcast_sends_to_active_connections(self):
+        from app.infrastructure.services.connection_manager import ConnectionManager
+
+        mgr = ConnectionManager()
+        mock_ws = AsyncMock()
+        await mgr.connect(mock_ws)
+        message = {"type": "test", "data": "hello"}
+        await mgr.broadcast(message)
+        mock_ws.send_json.assert_awaited_once_with(message)
+
+    @pytest.mark.anyio
+    async def test_disconnect_removes_websocket(self):
+        from app.infrastructure.services.connection_manager import ConnectionManager
+
+        mgr = ConnectionManager()
+        mock_ws = AsyncMock()
+        await mgr.connect(mock_ws)
+        assert len(mgr.active) == 1
+        mgr.disconnect(mock_ws)
+        assert len(mgr.active) == 0
+
+    @pytest.mark.anyio
+    async def test_broadcast_handles_stale_connections(self):
+        from app.infrastructure.services.connection_manager import ConnectionManager
+
+        mgr = ConnectionManager()
+        mock_ws = AsyncMock()
+        mock_ws.send_json = AsyncMock(side_effect=Exception("gone"))
+        await mgr.connect(mock_ws)
+        await mgr.broadcast({"test": True})
+        assert len(mgr.active) == 0

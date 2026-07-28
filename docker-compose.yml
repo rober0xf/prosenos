@@ -1,0 +1,25 @@
+name: prosenos-backend
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SCRAPER_BASE_URL=http://futbol_scraper:8000
+    volumes:
+      - .:/app
+      - /app/.venv
+      - /app/microservices/futbol_scraper
+
+  futbol_scraper:
+    build:
+      context: ./microservices/futbol_scraper
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000" 
+    volumes:
+      - ./microservices/futbol_scraper:/app
+      - /app/.venv

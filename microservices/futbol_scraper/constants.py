@@ -2,6 +2,7 @@ LEAGUES = {
     # ligas
     "Mundial",
     "brasileirao-serie-a",
+    "liga-profesional",
     "liga-profesional-reserva",
     # copas
     "champions",
