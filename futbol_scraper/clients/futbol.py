@@ -1,19 +1,21 @@
 import os
 from datetime import UTC, date, datetime, timedelta
+from typing import cast
 
 from curl_cffi import requests as cffi_requests
 from dotenv import load_dotenv
 
 from mappers.match_mapper import map_matches
+from models.match import Match
 
-load_dotenv()
+_ = load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
 if not BASE_URL:
     raise ValueError("BASE_URL environment variable not set")
 
 
-def fetch_matches(url: str):
+def fetch_matches(url: str) -> dict[str, object]:
     session = cffi_requests.Session(
         impersonate="firefox133",
     )
@@ -25,7 +27,8 @@ def fetch_matches(url: str):
     )
 
     response.raise_for_status()
-    return response.json()
+    data = response.json()  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+    return cast("dict[str, object]", data)
 
 
 def build_date_url(match_date: date):
@@ -39,7 +42,7 @@ def get_matches_by_date(target_date: date):
     return map_matches(data)
 
 
-def get_today_matches():
+def get_today_matches() -> list[Match]:
     today = datetime.now(UTC).date()
     return get_matches_by_date(today)
 

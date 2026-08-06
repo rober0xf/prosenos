@@ -1,13 +1,15 @@
 from datetime import datetime
+from typing import cast
 from zoneinfo import ZoneInfo
 
 from constants import LEAGUES
+from models.data import GameData
 from models.match import Match
 
 MATCH_TIMEZONE = ZoneInfo("UTC")
 
 
-def map_match(game: dict, league_name: str):
+def map_match(game: GameData, league_name: str) -> Match:
     home_team, away_team = game["teams"]
     league_name = league_name.replace("-", " ").title()
     scores = game.get("scores")
@@ -32,20 +34,18 @@ def map_match(game: dict, league_name: str):
     )
 
 
-def map_matches(data):
-    matches = []
+def map_matches(data: dict[str, object]) -> list[Match]:
+    matches: list[Match] = []
 
-    leagues = data.get("leagues") if isinstance(data, dict) else None
-    if leagues is None:
-        return matches
+    leagues = cast("list[dict[str, object]]", data["leagues"])
 
-    for league in data["leagues"]:
-        league_name = league["url_name"]
+    for league in leagues:
+        league_name = cast("str", league["url_name"])
 
         if league_name not in LEAGUES:
             continue
 
-        for game in league["games"]:
+        for game in cast("list[GameData]", league["games"]):
             matches.append(map_match(game, league_name))
 
     return matches

@@ -3,18 +3,20 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException, status
 
 from clients.futbol import get_matches_by_date, get_today_matches
+from models.match import Match
+
+from .response import MatchResponse
 
 app = FastAPI(title="futbol microservice")
 
 
-@app.get("/matches/today")
-def today_matches():
-    matches = get_today_matches()
-    return [match.to_dict() for match in matches]
+@app.get("/matches/today", response_model=list[MatchResponse])
+def today_matches() -> list[Match]:
+    return get_today_matches()
 
 
-@app.get("/matches/{day:path}")
-def get_matches(day: str):
+@app.get("/matches/{day:path}", response_model=list[MatchResponse])
+def get_matches(day: str) -> list[Match]:
     day = day.replace("/", "-").replace(".", "-")
 
     try:
@@ -25,5 +27,4 @@ def get_matches(day: str):
             detail="Use date format: DD-MM-YYYY (e.g. 06-07-2026 or 06/07/2026)",
         ) from None
 
-    matches = get_matches_by_date(match_date)
-    return [match.to_dict() for match in matches]
+    return get_matches_by_date(match_date)
