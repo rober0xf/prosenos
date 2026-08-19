@@ -19,5 +19,5 @@ def health_check(db: DBSession):
 
 
 @router.get("/")
-def health():
-    return health_check
+def health(db: DBSession):
+    return health_check(db)

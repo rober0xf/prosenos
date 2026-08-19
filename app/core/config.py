@@ -8,7 +8,7 @@ class Settings:
     HOST: str = os.getenv("APP_HOST", "127.0.0.1")
     PORT: int = int(os.getenv("APP_PORT", "8000"))
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    DEBUG: bool = ENVIRONMENT == "environment"
+    DEBUG: bool = ENVIRONMENT == "development"
 
 
 settings = Settings()

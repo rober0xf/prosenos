@@ -4,10 +4,14 @@ LEAGUES = {
     "brasileirao-serie-a",
     "liga-profesional",
     "liga-profesional-reserva",
+    "laliga",
+    "premier-league",
+    "serie-a",
     # copas
     "champions",
-    "libertadores",
+    "conmebol-libertadores",
     "europa_league",
     "conmebol-sudamericana",
     "super-cup",
+    "copa-argentina",
 }
