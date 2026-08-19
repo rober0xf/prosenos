@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from fastapi import HTTPException, status
 
-from app.domain.schemas.game import Game
+from app.domain.schemas.game import Game, ScraperGame
 from app.infrastructure.services.helpers import check_if_finished, map_match_to_game
 
 if TYPE_CHECKING:
@@ -14,27 +14,30 @@ if TYPE_CHECKING:
 
 
 class GameService:
+    repo: GameRepository
+
     def __init__(self, repo: GameRepository) -> None:
         self.repo = repo
 
-    def persist_finished_matches(self, matches: list[dict], sport: str = "football") -> int:
+    def persist_finished_matches(self, matches: list[ScraperGame], sport: str = "football") -> int:
         finished = [m for m in matches if check_if_finished(m)]
         if not finished:
             return 0
 
-        external_ids = {f"{sport}::{m['id']}" for m in finished}
+        external_ids = {f"{sport}::{m.id}" for m in finished}
         existing = self.repo.exists_by_external_ids(external_ids)
 
         new_games: list[GameModel] = []
         for match in finished:
-            ext_id = f"{sport}::{match['id']}"
+            ext_id = f"{sport}::{match.id}"
             if ext_id in existing:
                 continue
 
-            new_games.append(map_match_to_game(match, int(ext_id), sport))
+            new_games.append(map_match_to_game(match, ext_id, sport))
 
         if new_games:
             self.repo.bulk_insert(new_games)
+
         return len(new_games)
 
     def list_games(

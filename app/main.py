@@ -14,11 +14,11 @@ from app.infrastructure.services.futbol import poll_live_futbol_matches
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # noqa: ARG001
+async def lifespan(_app: FastAPI):
     Base.metadata.create_all(bind=engine)
     poll_task = asyncio.create_task(poll_live_futbol_matches())
     yield
-    poll_task.cancel()
+    _ = poll_task.cancel()
 
 
 app = FastAPI(title=settings.APP_TITLE, lifespan=lifespan)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import date
 from typing import Annotated
 
@@ -5,7 +7,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from app.domain.schemas.game import Game
-from app.infrastructure.api.routes.deps import DBSession
+from app.infrastructure.api.routes.deps import DBSession  # noqa: TC001
 from app.infrastructure.repositories.game import GameRepository
 from app.infrastructure.services.game import GameService
 

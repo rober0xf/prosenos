@@ -1,11 +1,9 @@
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException, status
-
 from clients.futbol import get_matches_by_date, get_today_matches
+from fastapi import FastAPI, HTTPException, status
 from models.match import Match
-
-from .response import MatchResponse
+from response import MatchResponse
 
 app = FastAPI(title="futbol microservice")
 
