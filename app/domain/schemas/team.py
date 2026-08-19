@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import ClassVar
+
+from pydantic import BaseModel, ConfigDict
 
 from app.domain.enums import Conference, League, Nationality, Sport
 
@@ -30,4 +32,4 @@ class Team(BaseModel):
     nationality: Nationality | None = None
     logo_url: str | None = None
 
-    model_config = {"from_attributes": True}
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)

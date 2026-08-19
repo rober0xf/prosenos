@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import ClassVar
+
+from pydantic import BaseModel, ConfigDict
 
 
 class FootballStatsCreate(BaseModel):
@@ -22,7 +24,7 @@ class FootballStats(BaseModel):
     goals_against: int
     points: int
 
-    model_config = {"from_attributes": True}
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
 
 class NBAStatsCreate(BaseModel):
@@ -42,4 +44,4 @@ class NBAStats(BaseModel):
     points_scored: int
     points_allowed: int
 
-    model_config = {"from_attributes": True}
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
