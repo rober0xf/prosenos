@@ -15,6 +15,13 @@ def _make_match(
     status: str = "finished",
     home_score: int | None = 2,
     away_score: int | None = 1,
+    agg_home_score: int | None = None,
+    agg_away_score: int | None = None,
+    home_penalties: int | None = None,
+    away_penalties: int | None = None,
+    qualifies: int | None = None,
+    home_scorers: list[str] | None = None,
+    away_scorers: list[str] | None = None,
 ) -> ScraperGame:
     return ScraperGame(
         id=match_id,
@@ -26,6 +33,13 @@ def _make_match(
         status=status,
         minute=None,
         kickoff="2024-07-09T21:00:00",
+        agg_home_score=agg_home_score,
+        agg_away_score=agg_away_score,
+        home_penalties=home_penalties,
+        away_penalties=away_penalties,
+        qualifies=qualifies,
+        home_scorers=home_scorers if home_scorers is not None else [],
+        away_scorers=away_scorers if away_scorers is not None else [],
     )
 
 
@@ -91,6 +105,64 @@ class TestGameService:
         args, _ = repo.bulk_insert.call_args
         assert args[0][0].external_id == "nba::42"
 
+    def test_persist_stores_two_legged_scores(self):
+        repo = create_autospec(GameRepository, instance=True)
+        repo.exists_by_external_ids.return_value = set()
+        svc = GameService(repo)
+
+        matches = [
+            _make_match(
+                match_id="tie1",
+                home_score=1,
+                away_score=3,
+                agg_home_score=1,
+                agg_away_score=4,
+                qualifies=2,
+                home_scorers=["Lionel Messi. 10'"],
+                away_scorers=["(P) Luis Suarez. 45'", "(EC) Chico. 82'"],
+            )
+        ]
+        count = svc.persist_finished_matches(matches)
+
+        assert count == 1
+        args, _ = repo.bulk_insert.call_args
+        game: GameModel = args[0][0]
+        assert game.agg_home_score == 1
+        assert game.agg_away_score == 4
+        assert game.qualifies == 2
+        assert game.home_scorers == ["Lionel Messi. 10'"]
+        assert game.away_scorers == ["(P) Luis Suarez. 45'", "(EC) Chico. 82'"]
+
+    def test_persist_penalty_decided_match(self):
+        repo = create_autospec(GameRepository, instance=True)
+        repo.exists_by_external_ids.return_value = set()
+        svc = GameService(repo)
+
+        decided = _make_match(
+            match_id="p1",
+            status="Por penales",
+            home_score=1,
+            away_score=1,
+            home_penalties=4,
+            away_penalties=5,
+            qualifies=2,
+        )
+        undecided = _make_match(
+            match_id="p2",
+            status="Por penales",
+            home_score=0,
+            away_score=0,
+            qualifies=None,
+        )
+        count = svc.persist_finished_matches([decided, undecided])
+
+        assert count == 1
+        args, _ = repo.bulk_insert.call_args
+        game: GameModel = args[0][0]
+        assert game.external_id == "football::p1"
+        assert game.home_penalties == 4
+        assert game.away_penalties == 5
+
     def test_list_games_delegates_to_repo(self):
         repo = create_autospec(GameRepository, instance=True)
         repo.list_all.return_value = [
@@ -106,6 +178,8 @@ class TestGameService:
                 status="finished",
                 minute=None,
                 played_at=datetime(2024, 7, 9, 21, 0, 0, tzinfo=UTC),
+                home_scorers=[],
+                away_scorers=[],
             )
         ]
         svc = GameService(repo)
