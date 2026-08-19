@@ -16,11 +16,13 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 
-# install deps creating an .env
+# copy the whole project first so workspace members (futbol_scraper) exist
+# when uv resolves/syncs the workspace
+COPY . .
+
+# install deps
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
-
-COPY . .
 
 EXPOSE 8000
 

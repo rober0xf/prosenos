@@ -20,5 +20,13 @@ dev = [
 
 [tool.uv.workspace]
 members = [
-    "microservices/futbol_scraper",
+    "futbol_scraper",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+executionEnvironments = [
+  { root = "." },
+  { root = "futbol_scraper" }
 ]
