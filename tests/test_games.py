@@ -4,6 +4,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from app.domain.models.game import GameModel
+from app.domain.schemas.game import ScraperGame
 from app.infrastructure.repositories.game import GameRepository
 from app.infrastructure.services.game import GameService
 
@@ -14,18 +15,18 @@ def _make_match(
     status: str = "finished",
     home_score: int | None = 2,
     away_score: int | None = 1,
-) -> dict:
-    return {
-        "id": match_id,
-        "league": "Mundial",
-        "home_team": "Argentina",
-        "away_team": "Brazil",
-        "home_score": home_score,
-        "away_score": away_score,
-        "status": status,
-        "minute": None,
-        "kickoff": "2024-07-09T21:00:00",
-    }
+) -> ScraperGame:
+    return ScraperGame(
+        id=match_id,
+        league="Mundial",
+        home_team="Argentina",
+        away_team="Brazil",
+        home_score=home_score,
+        away_score=away_score,
+        status=status,
+        minute=None,
+        kickoff="2024-07-09T21:00:00",
+    )
 
 
 class TestGameService:

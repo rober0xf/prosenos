@@ -62,7 +62,11 @@ class TestFutbolRoutes:
             assert response.json() == []
 
     def test_get_matches_scraper_down(self, client):
-        response = client.get("/api/v1/matches/11-07-2024")
+        with patch(
+            "app.infrastructure.services.futbol.settings.FUTBOL_SCRAPER_URL",
+            "http://127.0.0.1:1",
+        ):
+            response = client.get("/api/v1/matches/11-07-2024")
         assert response.status_code == 503
         assert response.json()["detail"] == "Scraper service is unavailable"
 
