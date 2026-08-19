@@ -16,6 +16,13 @@ class Game(BaseModel):
     status: str
     minute: int | None
     played_at: datetime | None
+    agg_home_score: int | None = None
+    agg_away_score: int | None = None
+    home_penalties: int | None = None
+    away_penalties: int | None = None
+    qualifies: int | None = None
+    home_scorers: list[str] = []
+    away_scorers: list[str] = []
 
     model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 
@@ -30,3 +37,10 @@ class ScraperGame(BaseModel):
     status: str
     minute: int | None
     kickoff: str | None
+    agg_home_score: int | None = None
+    agg_away_score: int | None = None
+    home_penalties: int | None = None
+    away_penalties: int | None = None
+    qualifies: int | None = None
+    home_scorers: list[str] = []
+    away_scorers: list[str] = []
