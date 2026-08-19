@@ -1,16 +1,17 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
 
 
 class TeamModel(Base):
-    __tablename__ = "teams"
+    __tablename__: str = "teams"
 
-    id = Column(Integer, primary_key=True)
-    external_id = Column(String, unique=True, nullable=True)
-    name = Column(String, nullable=False)
-    sport = Column(String, nullable=False)
-    league = Column(String, nullable=False)
-    conference = Column(String, nullable=True)
-    nationality = Column(String, nullable=True)
-    logo_url = Column(String, nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    external_id: Mapped[str] = mapped_column(String, unique=True, nullable=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    sport: Mapped[str] = mapped_column(String, nullable=False)
+    league: Mapped[str] = mapped_column(String, nullable=False)
+    conference: Mapped[str] = mapped_column(String, nullable=True)
+    nationality: Mapped[str] = mapped_column(String, nullable=True)
+    logo_url: Mapped[str] = mapped_column(String, nullable=True)
