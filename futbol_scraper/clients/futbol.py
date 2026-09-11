@@ -1,42 +1,24 @@
-import os
 from datetime import UTC, date, datetime, timedelta
-from typing import cast
 
+from clients.helper import build_date_url
+from clients.match_mapper import map_matches
 from curl_cffi import requests as cffi_requests
-from dotenv import load_dotenv
-
-from mappers.match_mapper import map_matches
+from models.data import ExternalMatchesResponse
 from models.match import Match
+from pydantic import TypeAdapter
 
-_ = load_dotenv()
-
-BASE_URL = os.getenv("BASE_URL")
-if not BASE_URL:
-    raise ValueError("BASE_URL environment variable not set")
+_matches_response_adapter = TypeAdapter(ExternalMatchesResponse)
 
 
-def fetch_matches(url: str) -> dict[str, object]:
-    session = cffi_requests.Session(
-        impersonate="firefox133",
-    )
-
-    response = session.get(
-        url,
-        headers={"X-VER": "1.11.7.5"},
-        timeout=30,
-    )
-
+def fetch_matches(url: str) -> ExternalMatchesResponse:
+    session = cffi_requests.Session(impersonate="firefox133")
+    response = session.get(url, headers={"X-VER": "1.11.7.5"}, timeout=30)
     response.raise_for_status()
-    data = response.json()  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
-    return cast("dict[str, object]", data)
+
+    return _matches_response_adapter.validate_python(response.json())  # pyright: ignore[reportUnknownMemberType]
 
 
-def build_date_url(match_date: date):
-    formatted = match_date.strftime("%d-%m-%Y")
-    return f"{BASE_URL}/{formatted}"
-
-
-def get_matches_by_date(target_date: date):
+def get_matches_by_date(target_date: date) -> list[Match]:
     url = build_date_url(target_date)
     data = fetch_matches(url)
     return map_matches(data)
@@ -47,11 +29,11 @@ def get_today_matches() -> list[Match]:
     return get_matches_by_date(today)
 
 
-def get_yesterday_matches():
+def get_yesterday_matches() -> list[Match]:
     yesterday = datetime.now(UTC).date() - timedelta(days=1)
     return get_matches_by_date(yesterday)
 
 
-def get_tomorrow_matches():
+def get_tomorrow_matches() -> list[Match]:
     tomorrow = datetime.now(UTC).date() + timedelta(days=1)
     return get_matches_by_date(tomorrow)
