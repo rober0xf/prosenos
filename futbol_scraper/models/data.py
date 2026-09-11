@@ -1,28 +1,37 @@
-from typing import TypedDict
+from pydantic import BaseModel
 
 
-class GoalData(TypedDict):
+class GoalData(BaseModel):
     player_name: str
     time_to_display: str
-    goal_type: str | None
+    goal_type: str | None = None
 
 
-class TeamData(TypedDict):
+class TeamData(BaseModel):
     name: str
-    goals: list[GoalData]
+    goals: list[GoalData] = []
 
 
-class StatusData(TypedDict):
+class StatusData(BaseModel):
     name: str
 
 
-class GameData(TypedDict):
+class GameData(BaseModel):
     id: str
     teams: tuple[TeamData, TeamData]
-    scores: list[int] | None
-    agg_scores: list[int] | None
-    penalties: list[int] | None
-    to_qualify: int | None
-    game_time: int | None
-    start_time: str | None
+    scores: list[int] | None = None
+    agg_scores: list[int] | None = None
+    penalties: list[int] | None = None
+    to_qualify: int | None = None
+    game_time: int | None = None
+    start_time: str | None = None
     status: StatusData
+
+
+class LeagueData(BaseModel):
+    url_name: str
+    games: list[GameData]
+
+
+class ExternalMatchesResponse(BaseModel):
+    leagues: list[LeagueData]
