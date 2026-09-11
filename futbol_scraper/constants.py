@@ -1,3 +1,9 @@
+from zoneinfo import ZoneInfo
+
+MATCH_TIMEZONE = ZoneInfo("UTC")
+
+GOAL_LABELS = {"E.C": "EC", "Pen": "P"}
+
 LEAGUES = {
     # ligas
     "Mundial",
@@ -8,7 +14,7 @@ LEAGUES = {
     "premier-league",
     "serie-a",
     # copas
-    "champions",
+    "uefa-champions-league",
     "conmebol-libertadores",
     "europa_league",
     "conmebol-sudamericana",
