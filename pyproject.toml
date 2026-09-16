@@ -30,3 +30,6 @@ executionEnvironments = [
   { root = "." },
   { root = "futbol_scraper" }
 ]
+
+[tool.ruff]
+ignore = ["TC001"]
