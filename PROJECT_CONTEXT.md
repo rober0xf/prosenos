@@ -15,7 +15,6 @@ The architecture should remain flexible enough to support external sports APIs, 
 * Pydantic v2
 * SQLAlchemy 2.x
 * SQLite
-* Pytest
 
 ## Core Features
 

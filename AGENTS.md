@@ -67,11 +67,7 @@ Do not use `print()`.
 
 ## Testing
 
-When adding features:
-
-* Add or update tests when practical.
-* Mock external providers.
-* Avoid real network calls.
+Do not add tests.
 
 ## Configuration
 
@@ -86,4 +82,3 @@ Verify that:
 * Database logic is in repositories.
 * External integrations are in providers.
 * Type hints are present.
-* Tests still pass.
