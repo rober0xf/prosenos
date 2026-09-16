@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from datetime import UTC, datetime, timedelta
 
@@ -8,11 +7,7 @@ from httpx import AsyncClient
 from pydantic import TypeAdapter
 
 from app.core.config import settings
-from app.core.database import SessionLocal
 from app.domain.schemas.game import ScraperGame
-from app.repositories.game import GameRepository
-from app.services.connection_manager import manager
-from app.services.game import GameService
 
 logger = logging.getLogger(__name__)
 POLL_INTERVAL = 15
@@ -36,34 +31,38 @@ async def get_matches(day: str) -> list[ScraperGame]:
         return TypeAdapter(list[ScraperGame]).validate_python(response.json())
 
     except httpx.RequestError:
-        logger.exception("failed to connect to scraper microservice at %s. day: %s", settings.FUTBOL_SCRAPER_URL, date_str)
+        logger.exception(
+            "failed to connect to scraper microservice at %s. day: %s",
+            settings.FUTBOL_SCRAPER_URL,
+            date_str,
+        )
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="scraper service service is unavailable",
         ) from None
 
 
-async def poll_live_futbol_matches() -> None:
-    previous: list[ScraperGame] = []
+# async def poll_live_futbol_matches() -> None:
+#     previous: list[ScraperGame] = []
 
-    while True:
-        try:
-            current = await get_matches("today")
+#     while True:
+#         try:
+#             current = await get_matches("today")
 
-            if current:
-                db = SessionLocal()
-                try:
-                    repo = GameRepository(db)
-                    service = GameService(repo)
-                    _ = service.persist_finished_matches(current)
-                finally:
-                    db.close()
+#             if current:
+#                 db = SessionLocal()
+#                 try:
+#                     repo = GameRepository(db)
+#                     service = GameService(repo)
+#                     _ = service.persist_finished_matches(current)
+#                 finally:
+#                     db.close()
 
-                if current != previous:
-                    await manager.broadcast({"type": "live_update", "matches": current})
-                    previous = current
+#                 if current != previous:
+#                     await manager.broadcast({"type": "live_update", "matches": current})
+#                     previous = current
 
-        except Exception:
-            logger.exception("live poll failed")
+#         except Exception:
+#             logger.exception("live poll failed")
 
-        await asyncio.sleep(POLL_INTERVAL)
+#         await asyncio.sleep(POLL_INTERVAL)
