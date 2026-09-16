@@ -1,16 +1,13 @@
 import asyncio
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
+import uvicorn
 from fastapi import FastAPI
 
+from app.api.router import router as api_router
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.infrastructure.api.routes.futbol import router as futbol_router
-from app.infrastructure.api.routes.games import router as games_router
-from app.infrastructure.api.routes.health import router as health_router
-from app.infrastructure.api.routes.teams import router as teams_router
-from app.infrastructure.api.routes.ws import router as ws_router
-from app.infrastructure.services.futbol import poll_live_futbol_matches
+from app.services.futbol import poll_live_futbol_matches
 
 
 @asynccontextmanager
@@ -18,21 +15,17 @@ async def lifespan(_app: FastAPI):
     Base.metadata.create_all(bind=engine)
     poll_task = asyncio.create_task(poll_live_futbol_matches())
     yield
+
     _ = poll_task.cancel()
+    with suppress(asyncio.CancelledError):
+        await poll_task
 
 
 app = FastAPI(title=settings.APP_TITLE, lifespan=lifespan)
-
-app.include_router(futbol_router)
-app.include_router(games_router)
-app.include_router(teams_router)
-app.include_router(health_router)
-app.include_router(ws_router)
+app.include_router(api_router)
 
 
 def main() -> None:
-    import uvicorn  # noqa: PLC0415
-
     uvicorn.run(
         "app.main:app",
         host=getattr(settings, "HOST", "127.0.0.1"),
