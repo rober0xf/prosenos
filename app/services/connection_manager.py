@@ -3,14 +3,12 @@ from typing import TypedDict
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from app.domain.schemas.game import ScraperGame
-
 logger = logging.getLogger(__name__)
 
 
 class LiveUpdateMessage(TypedDict):
     type: str
-    matches: list[ScraperGame]
+    matches: list[dict[str, object]]
 
 
 class ConnectionManager:
