@@ -8,28 +8,11 @@ dependencies = [
     "fastapi[standard]>=0.136.3",
     "sqlalchemy>=2.0",
     "httpx>=0.28.0",
+    "curl-cffi>=0.16.0",
 ]
 
 [project.scripts]
 prosenos = "app.main:main"
-
-[dependency-groups]
-dev = [
-    "pytest>=9.0.3",
-]
-
-[tool.uv.workspace]
-members = [
-    "futbol_scraper",
-]
-
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-executionEnvironments = [
-  { root = "." },
-  { root = "futbol_scraper" }
-]
 
 [tool.ruff]
 ignore = ["TC001"]

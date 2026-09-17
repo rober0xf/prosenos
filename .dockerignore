@@ -41,3 +41,7 @@ docker-compose*.yml
 node_modules/
 
 .cache/
+
+# git submodules
+frontend/
+.gitmodules

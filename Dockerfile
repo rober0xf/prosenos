@@ -11,8 +11,7 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 
-# copy the whole project first so workspace members (futbol_scraper) exist
-# when uv resolves/syncs the workspace
+# copy the whole project so it exists when uv syncs the package
 COPY . .
 
 # install deps

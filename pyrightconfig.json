@@ -1,5 +1,4 @@
 {
   "venvPath": ".",
   "venv": ".venv",
-  "extraPaths": [".", "futbol_scraper", "nba_scraper"],
 }
