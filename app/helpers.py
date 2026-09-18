@@ -9,8 +9,9 @@ from app.domain.schemas.data import TeamData
 _ = load_dotenv()
 
 BASE_URL = os.getenv("SCRAPE_FUTBOL_URL")
+print("SCRAPE_FUTBOL_URL exists:", bool(os.getenv("SCRAPE_FUTBOL_URL")))
 if not BASE_URL:
-    raise ValueError("BASE_URL environment variable not set")
+    raise ValueError("SCRAPE_FUTBOL_URL environment variable not set")
 
 
 def build_date_url(match_date: date):
