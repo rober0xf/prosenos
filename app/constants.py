@@ -7,7 +7,6 @@ GOAL_LABELS = {"E.C": "EC", "Pen": "P"}
 
 LEAGUES = {
     # ligas
-    "Mundial",
     "brasileirao-serie-a",
     "liga-profesional",
     "liga-profesional-reserva",
@@ -21,4 +20,10 @@ LEAGUES = {
     "conmebol-sudamericana",
     "super-cup",
     "copa-argentina",
+    "super-copa-international",
+    "copa-del-rey",
+    # nations
+    "Mundial",
+    "friendly-international",
+    "uefa-nations-league",
 }
